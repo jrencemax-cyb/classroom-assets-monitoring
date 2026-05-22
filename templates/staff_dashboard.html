@@ -1,0 +1,72 @@
+
+<div class="container">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h2>Staff Dashboard</h2>
+
+<a href="/logout">Logout</a>
+
+<div class="card">
+
+    <h3>Add Asset</h3>
+
+    <form method="POST" action="/add_asset">
+
+        <input type="text" name="asset_name" placeholder="Asset Name" required>
+
+        <input type="number" name="quantity" placeholder="Quantity" required>
+
+        <input type="text" name="classroom" placeholder="Classroom" required>
+
+        <button type="submit">Add Asset</button>
+
+    </form>
+
+</div>
+
+<form method="GET" action="/dashboard">
+
+    <input type="text"
+           name="search"
+           placeholder="Search assets...">
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<h3>Assets List</h3>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Classroom</th>
+        <th>Action</th>
+    </tr>
+
+    {% for asset in assets %}
+    <tr>
+        <td>{{ asset.id }}</td>
+        <td>{{ asset.asset_name }}</td>
+        <td>{{ asset.quantity }}</td>
+        <td>{{ asset.status }}</td>
+        <td>{{ asset.classroom }}</td>
+
+        <td>
+            <a href="/update_status/{{ asset.id }}">Update Status</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="navbar">
+    <div>Classroom Assets System</div>
+    <div>
+        <a href="/dashboard">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+</div>

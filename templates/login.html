@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Assets Monitoring System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-left">
+
+        <h1>Classroom Assets Monitoring System</h1>
+
+        <p>
+            Monitor classroom equipment, manage assets,
+            track reports, and organize school inventory
+            efficiently.
+        </p>
+
+    </div>
+
+ <a href="/admin_login">
+     <button type="button">Login as Admin</button>
+ </a>
+
+    <div class="login-right">
+
+        <div class="login-box">
+
+            <h2>Welcome Back</h2>
+
+            <p class="subtitle">
+                Login to continue
+            </p>
+
+            <form method="POST">
+
+                <input type="text"
+                       name="username"
+                       placeholder="Username"
+                       required>
+
+                <input type="password"
+                       name="password"
+                       placeholder="Password"
+                       required>
+
+                <button type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <p class="register-text">
+                Don’t have an account?
+                <a href="/register">Create Account</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <h2>Create Account</h2>
+
+        <form method="POST">
+
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   required>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Password"
+                   required>
+
+            <!-- ROLE SELECTION (NO ADMIN) -->
+            <select name="role" required>
+                <option value="teacher">Teacher</option>
+                <option value="staff">Staff</option>
+            </select>
+
+            <!-- ADMIN SECRET (ONLY IF YOU WANT ADMIN) -->
+            <input type="password"
+                   name="admin_code"
+                   placeholder="Admin Code (Only if admin)">
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+        <p>
+            Already have an account?
+            <a href="/">Login here</a>
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

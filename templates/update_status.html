@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h2>Update Asset Status</h2>
+
+<form method="POST">
+
+    <p>Asset: {{ asset.asset_name }}</p>
+
+    <select name="status">
+        <option value="Good">Good</option>
+        <option value="Damaged">Damaged</option>
+        <option value="Under Repair">Under Repair</option>
+    </select>
+
+    <button type="submit">Update</button>
+
+</form>

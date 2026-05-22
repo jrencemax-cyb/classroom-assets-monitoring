@@ -1,0 +1,55 @@
+
+<div class="container">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<div style="background:#333; color:white; padding:10px;">
+    <h3>Classroom Assets System</h3>
+    <a href="/dashboard" style="color:white;">Home</a> |
+    <a href="/logout" style="color:white;">Logout</a>
+</div>
+
+
+<h2>Teacher Dashboard</h2>
+
+<form method="GET" action="/dashboard">
+
+    <input type="text"
+           name="search"
+           placeholder="Search assets...">
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<h3>Assets List</h3>
+
+<table border="1">
+    <tr>
+        <th>ID</th>x
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Classroom</th>
+    </tr>
+
+    {% for asset in assets %}
+    <tr>
+        <td>{{ asset.id }}</td>
+        <td>{{ asset.asset_name }}</td>
+        <td>{{ asset.quantity }}</td>
+        <td>{{ asset.status }}</td>
+        <td>{{ asset.classroom }}</td>
+        <td><a href="/report_asset/{{ asset.id }}">Report</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="navbar">
+    <div>Classroom Assets System</div>
+    <div>
+        <a href="/dashboard">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+</div>

@@ -1,0 +1,25 @@
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h2>Reported Issues</h2>
+
+<table border="1">
+
+<tr>
+    <th>ID</th>
+    <th>Asset ID</th>
+    <th>Reported By</th>
+    <th>Issue</th>
+</tr>
+
+{% for report in reports %}
+
+<tr>
+    <td>{{ report.id }}</td>
+    <td>{{ report.asset_id }}</td>
+    <td>{{ report.reported_by }}</td>
+    <td>{{ report.issue }}</td>
+</tr>
+
+{% endfor %}
+
+</table>

@@ -1,0 +1,17 @@
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h2>Report Asset Issue</h2>
+
+<form method="POST">
+
+    <p>Asset: {{ asset.asset_name }}</p>
+
+    <textarea name="issue"
+              placeholder="Describe the problem"
+              required></textarea>
+
+    <br><br>
+
+    <button type="submit">Submit Report</button>
+
+</form>
