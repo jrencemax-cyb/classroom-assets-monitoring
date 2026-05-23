@@ -11,28 +11,33 @@ app.secret_key = "secretkey"
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
 
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT username, password, role FROM users WHERE username=%s AND password=%s",
-            (username, password)
+            "SELECT username, password, role FROM users WHERE username=%s",
+            (username,)
         )
 
         user = cursor.fetchone()
 
+        print("DB RESULT:", user)
+        print("INPUT PASSWORD:", password)
+
         if user:
-            session["user"] = user[0]
-            session["role"] = user[2]
-            return redirect(url_for("dashboard"))
+            db_password = user[1].strip()
+
+            if password == db_password:
+                session["user"] = user[0]
+                session["role"] = user[2]
+                return redirect(url_for("dashboard"))
 
         return "Invalid Login ❌"
 
     return render_template("login.html")
-
 
 # =========================
 # ADMIN LOGIN
