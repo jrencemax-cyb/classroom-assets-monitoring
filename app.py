@@ -40,11 +40,11 @@ def login():
 @app.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        password = request.form["password"]
+        password = request.form.get("password", "").strip()
 
         ADMIN_PASSWORD = "ADMIN2026"
 
-        if password == ADMIN_PASSWORD:
+        if password.strip() == ADMIN_PASSWORD:
             session["user"] = "admin"
             session["role"] = "admin"
             return redirect(url_for("dashboard"))
