@@ -52,7 +52,8 @@ def admin_login():
 
         ADMIN_PASSWORD = "ADMIN2026"
 
-        if password.strip() == ADMIN_PASSWORD:
+        if password == ADMIN_PASSWORD:
+            session.clear()
             session["user"] = "admin"
             session["role"] = "admin"
             return redirect(url_for("dashboard"))
@@ -60,7 +61,6 @@ def admin_login():
         return "Wrong Admin Password ❌"
 
     return render_template("admin_login.html")
-
 
 # =========================
 # REGISTER
