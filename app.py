@@ -28,8 +28,8 @@ def login():
             session["user"] = user[0]
             session["role"] = user[2]
             return redirect(url_for("dashboard"))
-        else:
-            return "Invalid Login ❌"
+
+        return "Invalid Login ❌"
 
     return render_template("login.html")
 
@@ -48,8 +48,8 @@ def admin_login():
             session["user"] = "admin"
             session["role"] = "admin"
             return redirect(url_for("dashboard"))
-        else:
-            return "Wrong Admin Password ❌"
+
+        return "Wrong Admin Password ❌"
 
     return render_template("admin_login.html")
 
@@ -73,7 +73,6 @@ def register():
         )
 
         conn.commit()
-
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -257,7 +256,7 @@ def logout():
 
 
 # =========================
-# RUN APP
+# RUN
 # =========================
 if __name__ == "__main__":
     app.run(debug=True)
