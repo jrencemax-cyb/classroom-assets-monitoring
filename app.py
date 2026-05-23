@@ -4,8 +4,9 @@ from db import get_db_connection
 app = Flask(__name__)
 app.secret_key = "secretkey"
 
+
 # =========================
-# LOGIN (USER LOGIN ONLY)
+# LOGIN
 # =========================
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -14,18 +15,18 @@ def login():
         password = request.form["password"]
 
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT * FROM users WHERE username=%s AND password=%s",
+            "SELECT username, password, role FROM users WHERE username=%s AND password=%s",
             (username, password)
         )
 
         user = cursor.fetchone()
 
         if user:
-            session["user"] = user["username"]
-            session["role"] = user["role"]
+            session["user"] = user[0]
+            session["role"] = user[2]
             return redirect(url_for("dashboard"))
         else:
             return "Invalid Login ❌"
@@ -34,7 +35,7 @@ def login():
 
 
 # =========================
-# ADMIN LOGIN (SEPARATE & SECURE)
+# ADMIN LOGIN
 # =========================
 @app.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
@@ -54,7 +55,7 @@ def admin_login():
 
 
 # =========================
-# REGISTER (NO ADMIN HERE)
+# REGISTER
 # =========================
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -70,6 +71,7 @@ def register():
             "INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
             (username, password, role)
         )
+
         conn.commit()
 
         return redirect(url_for("login"))
@@ -78,7 +80,7 @@ def register():
 
 
 # =========================
-# DASHBOARD (ROLE BASED)
+# DASHBOARD
 # =========================
 @app.route("/dashboard")
 def dashboard():
@@ -89,15 +91,14 @@ def dashboard():
     search = request.args.get("search")
 
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
-    # SEARCH LOGIC
     if search:
         cursor.execute("""
             SELECT * FROM assets
-            WHERE asset_name LIKE %s
-            OR classroom LIKE %s
-            OR status LIKE %s
+            WHERE asset_name ILIKE %s
+            OR classroom ILIKE %s
+            OR status ILIKE %s
         """, (f"%{search}%", f"%{search}%", f"%{search}%"))
     else:
         cursor.execute("SELECT * FROM assets")
@@ -114,6 +115,7 @@ def dashboard():
         return render_template("staff_dashboard.html", assets=assets)
 
     return redirect(url_for("login"))
+
 
 # =========================
 # ADD ASSET
@@ -156,23 +158,20 @@ def delete_asset(id):
 @app.route("/edit_asset/<int:id>", methods=["GET", "POST"])
 def edit_asset(id):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
     if request.method == "POST":
         asset_name = request.form["asset_name"]
         quantity = request.form["quantity"]
         classroom = request.form["classroom"]
 
-        cursor.execute(
-            """
+        cursor.execute("""
             UPDATE assets
             SET asset_name=%s,
                 quantity=%s,
                 classroom=%s
             WHERE id=%s
-            """,
-            (asset_name, quantity, classroom, id)
-        )
+        """, (asset_name, quantity, classroom, id))
 
         conn.commit()
         return redirect(url_for("dashboard"))
@@ -189,17 +188,14 @@ def edit_asset(id):
 @app.route("/report_asset/<int:id>", methods=["GET", "POST"])
 def report_asset(id):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
     if request.method == "POST":
         issue = request.form["issue"]
         reported_by = session.get("user")
 
         cursor.execute(
-            """
-            INSERT INTO reports (asset_id, reported_by, issue)
-            VALUES (%s, %s, %s)
-            """,
+            "INSERT INTO reports (asset_id, reported_by, issue) VALUES (%s, %s, %s)",
             (id, reported_by, issue)
         )
 
@@ -218,7 +214,7 @@ def report_asset(id):
 @app.route("/reports")
 def reports():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM reports")
     reports = cursor.fetchall()
@@ -232,7 +228,7 @@ def reports():
 @app.route("/update_status/<int:id>", methods=["GET", "POST"])
 def update_status(id):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
     if request.method == "POST":
         status = request.form["status"]
@@ -264,6 +260,4 @@ def logout():
 # RUN APP
 # =========================
 if __name__ == "__main__":
-    from db import init_db
-    init_db()
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True)
