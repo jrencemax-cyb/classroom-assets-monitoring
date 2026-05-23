@@ -4,5 +4,6 @@ import psycopg2
 def get_db_connection():
     return psycopg2.connect(
         os.getenv("DATABASE_URL"),
-        sslmode="require"
+        sslmode="require",
+        connect_timeout=10
     )

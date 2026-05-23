@@ -10,34 +10,38 @@ app.secret_key = "secretkey"
 # =========================
 @app.route("/", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "").strip()
+    try:
+        if request.method == "POST":
+            username = request.form.get("username", "").strip()
+            password = request.form.get("password", "").strip()
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
+            conn = get_db_connection()
+            cursor = conn.cursor()
 
-        cursor.execute(
-            "SELECT username, password, role FROM users WHERE username=%s",
-            (username,)
-        )
+            cursor.execute(
+                "SELECT username, password, role FROM users WHERE username=%s",
+                (username,)
+            )
 
-        user = cursor.fetchone()
+            user = cursor.fetchone()
 
-        if user is None:
+            if not user:
+                return "Invalid Login ❌"
+
+            db_username, db_password, db_role = user
+
+            if password.strip() == db_password.strip():
+                session["user"] = db_username
+                session["role"] = db_role
+                return redirect(url_for("dashboard"))
+
             return "Invalid Login ❌"
 
-        db_username, db_password, db_role = user
+        return render_template("login.html")
 
-        if password.strip() == db_password.strip():
-            session["user"] = db_username
-            session["role"] = db_role
-            return redirect(url_for("dashboard"))
-
-        return "Invalid Login ❌"
-
-    return render_template("login.html")
-
+    except Exception as e:
+        print("ERROR:", e)
+        return f"Server Error: {e}"
 # =========================
 # ADMIN LOGIN
 # =========================
