@@ -24,16 +24,15 @@ def login():
 
         user = cursor.fetchone()
 
-        print("DB RESULT:", user)
-        print("INPUT PASSWORD:", password)
+        if user is None:
+            return "Invalid Login ❌"
 
-        if user:
-            db_password = user[1].strip()
+        db_username, db_password, db_role = user
 
-            if password == db_password:
-                session["user"] = user[0]
-                session["role"] = user[2]
-                return redirect(url_for("dashboard"))
+        if password.strip() == db_password.strip():
+            session["user"] = db_username
+            session["role"] = db_role
+            return redirect(url_for("dashboard"))
 
         return "Invalid Login ❌"
 
@@ -65,9 +64,9 @@ def admin_login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        role = request.form["role"]
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        role = request.form.get("role", "").strip()
 
         conn = get_db_connection()
         cursor = conn.cursor()
